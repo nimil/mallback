@@ -31,13 +31,23 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 # - 华东2（上海）：registry.cn-shanghai.aliyuncs.com/acs/alpine:latest
 # - 华南1（深圳）：registry.cn-shenzhen.aliyuncs.com/acs/alpine:latest
 # 如果使用 GitHub Actions 或其他环境，可以改为 alpine:latest
-FROM https://mruke5tu.mirror.aliyuncs.com/acs/alpine:latest
-
+# 注意：镜像加速器地址不能直接在 FROM 中使用，需要使用镜像仓库地址
+FROM registry.cn-beijing.aliyuncs.com/acs/alpine:latest
 
 WORKDIR /app
 
-# 安装 ca-certificates 和 wget（用于健康检查）
-RUN apk --no-cache add ca-certificates tzdata wget
+# 修改 Alpine 镜像源为阿里云（加快下载速度）
+RUN echo "https://mruke5tu.mirror.aliyuncs.com/alpine/v3.18/main/" > /etc/apk/repositories && \
+    echo "https://mruke5tu.mirror.aliyuncs.com/alpine/v3.18/community/" >> /etc/apk/repositories
+
+# 安装 ca-certificates 和 tzdata（用于时区配置）
+RUN apk update && \
+    apk --no-cache add ca-certificates tzdata
+
+# 配置时区为上海时区（解决时区问题）
+RUN rm -f /etc/localtime && \
+    ln -sv /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone
 
 # 创建非 root 用户
 RUN addgroup -g 1000 appuser && \
@@ -54,10 +64,6 @@ USER appuser
 
 # 暴露端口
 EXPOSE 8083
-
-# 健康检查
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8083/api/health || exit 1
 
 # 运行应用
 CMD ["./mallback"]
