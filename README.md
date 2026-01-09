@@ -207,6 +207,14 @@ go mod tidy
      - `GIT_COMMIT`: Git 提交 SHA
      - `BUILD_TIME`: 构建时间
 
+3. **镜像加速器配置**（推荐）
+   
+   项目已配置阿里云镜像加速器 `https://mruke5tu.mirror.aliyuncs.com`：
+   - ✅ GitHub Actions 构建时自动使用镜像加速器
+   - ✅ 部署脚本自动配置服务器镜像加速器
+   
+   如需在本地配置，请参考：[DEPLOY.md](./DEPLOY.md)
+
 3. **常见问题**
 
    **问题**：`failed to read dockerfile: no such file or directory`

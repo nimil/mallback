@@ -83,7 +83,83 @@ git push
 - 使用镜像缓存
 - 考虑使用阿里云镜像加速器
 
-### 4. 本地测试
+#### 问题4：无法拉取 alpine:latest 镜像（超时错误）
+
+**错误信息**：
+```
+failed to solve: alpine:latest: failed to do request: Head "https://registry-1.docker.io/v2/library/alpine/manifests/latest": dial tcp ...: i/o timeout
+```
+
+**原因**：阿里云 ACR 构建环境无法直接访问 Docker Hub
+
+**解决**：
+- ✅ 已在 Dockerfile 中使用阿里云镜像仓库中的 alpine 镜像
+- ✅ 使用 `registry.cn-hangzhou.aliyuncs.com/acs/alpine:latest` 替代 `alpine:latest`
+- 如果使用其他地区，可以替换为对应地区的镜像地址：
+  - 华东1（杭州）：`registry.cn-hangzhou.aliyuncs.com/acs/alpine:latest`
+  - 华东2（上海）：`registry.cn-shanghai.aliyuncs.com/acs/alpine:latest`
+  - 华北2（北京）：`registry.cn-beijing.aliyuncs.com/acs/alpine:latest`
+  - 华南1（深圳）：`registry.cn-shenzhen.aliyuncs.com/acs/alpine:latest`
+
+### 4. 配置 Docker 镜像加速器
+
+为了加快镜像拉取速度，建议在服务器上配置阿里云镜像加速器：
+
+#### 在服务器上配置镜像加速器
+
+```bash
+# 创建或编辑 Docker 配置文件
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": [
+    "https://mruke5tu.mirror.aliyuncs.com"
+  ]
+}
+EOF
+
+# 重新加载配置
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+# 验证配置
+docker info | grep -A 10 "Registry Mirrors"
+```
+
+**注意**：如果配置文件中已有其他内容，请手动编辑 `/etc/docker/daemon.json`，添加镜像加速器到 `registry-mirrors` 数组中。
+
+#### 在本地配置镜像加速器（Mac）
+
+```bash
+# 在 Docker Desktop 中配置
+# Docker Desktop -> Settings -> Docker Engine
+# 添加以下配置：
+{
+  "registry-mirrors": [
+    "https://mruke5tu.mirror.aliyuncs.com"
+  ]
+}
+```
+
+#### 在本地配置镜像加速器（Linux）
+
+```bash
+# 创建或编辑配置文件
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": [
+    "https://mruke5tu.mirror.aliyuncs.com"
+  ]
+}
+EOF
+
+# 重启 Docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+### 5. 本地测试
 
 在推送到阿里云之前，可以在本地测试构建：
 
@@ -106,7 +182,7 @@ docker stop mallback-test
 docker rm mallback-test
 ```
 
-### 5. 验证配置
+### 6. 验证配置
 
 构建成功后，检查镜像：
 
@@ -123,7 +199,7 @@ docker run -d -p 8083:8083 \
   crpi-tenhsp8xxy96h93c.cn-beijing.personal.cr.aliyuncs.com/mallhua/mallback:0.0.1
 ```
 
-### 6. 推荐的 ACR 构建配置
+### 7. 推荐的 ACR 构建配置
 
 在阿里云控制台配置时，使用以下设置：
 

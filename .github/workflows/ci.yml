@@ -29,6 +29,14 @@ jobs:
     
     - name: 设置 Docker Buildx
       uses: docker/setup-buildx-action@v3
+      with:
+        driver-opts: |
+          image=moby/buildkit:latest
+        config-inline: |
+          [registry."docker.io"]
+            mirrors = ["https://mruke5tu.mirror.aliyuncs.com"]
+          [registry."registry-1.docker.io"]
+            mirrors = ["https://mruke5tu.mirror.aliyuncs.com"]
     
     - name: 登录 Docker Registry
       # 如果使用 Docker Hub，设置 DOCKER_USERNAME 和 DOCKER_PASSWORD secrets
@@ -73,6 +81,8 @@ jobs:
           BUILD_TIME=${{ github.event.head_commit.timestamp || github.event.repository.pushed_at }}
           GIT_COMMIT=${{ github.sha }}
           APP_VERSION=${{ github.ref == 'refs/heads/main' && 'dev' || github.ref_name }}
+        # 使用镜像加速器加速拉取基础镜像
+        platforms: linux/amd64
 
   deploy:
     name: 部署到服务器
@@ -97,6 +107,14 @@ jobs:
         key: ${{ secrets.DEPLOY_SSH_KEY }}
         port: ${{ secrets.DEPLOY_PORT || 22 }}
         script: |
+          # 配置 Docker 镜像加速器（如果服务器上未配置）
+          if [ ! -f /etc/docker/daemon.json ]; then
+            sudo mkdir -p /etc/docker
+            echo '{"registry-mirrors": ["https://mruke5tu.mirror.aliyuncs.com"]}' | sudo tee /etc/docker/daemon.json
+            sudo systemctl daemon-reload
+            sudo systemctl restart docker
+          fi
+          
           # 登录 Docker Registry
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           

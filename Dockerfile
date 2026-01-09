@@ -24,7 +24,14 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -o mallback .
 
 # 运行阶段
-FROM alpine:latest
+# 使用阿里云镜像仓库中的 alpine 镜像（避免 ACR 构建时访问 Docker Hub 超时）
+# 如果你的 ACR 在其他地区，可以修改为对应地区的地址：
+# - 华东1（杭州）：registry.cn-hangzhou.aliyuncs.com/acs/alpine:latest
+# - 华北2（北京）：registry.cn-beijing.aliyuncs.com/acs/alpine:latest
+# - 华东2（上海）：registry.cn-shanghai.aliyuncs.com/acs/alpine:latest
+# - 华南1（深圳）：registry.cn-shenzhen.aliyuncs.com/acs/alpine:latest
+# 如果使用 GitHub Actions 或其他环境，可以改为 alpine:latest
+FROM registry.cn-beijing.aliyuncs.com/acs/alpine:latest
 
 WORKDIR /app
 
