@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# 文档
+README.md
+*.md
+
+# 构建产物
+mallback
+*.exe
+*.dll
+*.so
+
+# 测试
+*.test
+*.out
+
+# 依赖
+vendor
+
+# GitHub Actions
+.github
+
+# 环境变量
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+# 注意：不要排除 Dockerfile，构建时需要它
+.dockerignore
+
