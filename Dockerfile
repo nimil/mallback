@@ -1,5 +1,5 @@
 # 构建阶段
-FROM golang:1.20-alpine AS builder
+FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/golang:1.19.4 AS builder
 
 WORKDIR /app
 
