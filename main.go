@@ -133,7 +133,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := getEnv("PORT", "8083")
+	port := getEnv("PORT", "8084")
 	
 	r := mux.NewRouter()
 	

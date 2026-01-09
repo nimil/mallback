@@ -188,6 +188,37 @@ go get -u ./...
 go mod tidy
 ```
 
+## 阿里云容器镜像服务（ACR）部署
+
+### 快速配置
+
+在阿里云容器镜像服务中配置自动构建：
+
+1. **代码源设置**
+   - 代码源：GitHub
+   - 仓库地址：`https://github.com/nimil/mallback.git`
+   - 分支：`main`
+
+2. **构建配置**
+   - **构建目录**：`/`（根目录，重要！）
+   - **Dockerfile 路径**：`Dockerfile`
+   - **构建参数**（可选）：
+     - `APP_VERSION`: 镜像版本号
+     - `GIT_COMMIT`: Git 提交 SHA
+     - `BUILD_TIME`: 构建时间
+
+3. **常见问题**
+
+   **问题**：`failed to read dockerfile: no such file or directory`
+   
+   **解决**：
+   - ✅ 确认构建目录设置为 `/`（根目录）
+   - ✅ 确认 Dockerfile 在仓库根目录
+   - ✅ 确认 Dockerfile 已提交到 Git
+   - ✅ 检查 `.dockerignore` 未排除 Dockerfile
+
+   详细部署说明请参考：[DEPLOY.md](./DEPLOY.md)
+
 ## 许可证
 
 MIT License
