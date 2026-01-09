@@ -103,9 +103,20 @@ failed to solve: alpine:latest: failed to do request: Head "https://registry-1.d
 
 ### 4. 配置 Docker 镜像加速器
 
-为了加快镜像拉取速度，建议在服务器上配置阿里云镜像加速器：
+根据[阿里云官方文档](https://help.aliyun.com/zh/acr/user-guide/accelerate-the-pulls-of-docker-official-images)，Docker 镜像加速器用于加速拉取 Docker Hub 的镜像。
 
-#### 在服务器上配置镜像加速器
+**重要提示**：
+- ACR 镜像加速目前已停止同步最新镜像
+- 镜像加速器是面向个人开发者的服务，仅限个人开发场景
+- 生产环境建议使用订阅海外源镜像或 GA 加速方案
+
+#### 获取镜像加速器地址
+
+1. 登录[容器镜像服务控制台](https://cr.console.aliyun.com/)
+2. 选择**镜像工具** > **镜像加速器**
+3. 获取你的专属加速器地址（格式：`https://xxx.mirror.aliyuncs.com`）
+
+#### 在服务器上配置镜像加速器（新版本 Docker 1.10+）
 
 ```bash
 # 创建或编辑 Docker 配置文件

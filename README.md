@@ -209,13 +209,23 @@ go mod tidy
 
 3. **镜像加速器配置**（推荐）
    
-   项目已配置阿里云镜像加速器 `https://mruke5tu.mirror.aliyuncs.com`：
-   - ✅ GitHub Actions 构建时自动使用镜像加速器
+   **重要说明**：
+   - Docker 镜像加速器：用于加速拉取 Docker Hub 镜像（如 `alpine:latest`）
+   - Alpine 包管理器镜像源：用于加速下载 apk 包（已配置在 Dockerfile 中）
+   
+   项目已配置阿里云 Docker 镜像加速器 `https://mruke5tu.mirror.aliyuncs.com`：
+   - ✅ GitHub Actions 构建时自动使用镜像加速器（Buildx 配置）
    - ✅ 部署脚本自动配置服务器镜像加速器
+   
+   根据[阿里云官方文档](https://help.aliyun.com/zh/acr/user-guide/accelerate-the-pulls-of-docker-official-images)：
+   - ACR 镜像加速已停止同步最新镜像，仅限个人开发场景
+   - 生产环境建议使用订阅海外源镜像或 GA 加速方案
+   
+   获取你的专属加速器地址：登录[容器镜像服务控制台](https://cr.console.aliyun.com/) > 镜像工具 > 镜像加速器
    
    如需在本地配置，请参考：[DEPLOY.md](./DEPLOY.md)
 
-3. **常见问题**
+### 常见问题
 
    **问题**：`failed to read dockerfile: no such file or directory`
    

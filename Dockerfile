@@ -36,9 +36,11 @@ FROM registry.cn-beijing.aliyuncs.com/acs/alpine:latest
 
 WORKDIR /app
 
-# 修改 Alpine 镜像源为阿里云（加快下载速度）
-RUN echo "https://mruke5tu.mirror.aliyuncs.com/alpine/v3.18/main/" > /etc/apk/repositories && \
-    echo "https://mruke5tu.mirror.aliyuncs.com/alpine/v3.18/community/" >> /etc/apk/repositories
+# 修改 Alpine 包管理器镜像源为阿里云（加快 apk 包下载速度）
+# 注意：这是 Alpine 的 apk 包管理器镜像源，与 Docker 镜像加速器不同
+# Docker 镜像加速器需要在 Docker daemon 的 /etc/docker/daemon.json 中配置
+RUN echo "http://mirrors.aliyun.com/alpine/v3.18/main/" > /etc/apk/repositories && \
+    echo "http://mirrors.aliyun.com/alpine/v3.18/community/" >> /etc/apk/repositories
 
 # 安装 ca-certificates 和 tzdata（用于时区配置）
 RUN apk update && \
