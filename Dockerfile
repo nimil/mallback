@@ -31,7 +31,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 # - 华东2（上海）：registry.cn-shanghai.aliyuncs.com/acs/alpine:latest
 # - 华南1（深圳）：registry.cn-shenzhen.aliyuncs.com/acs/alpine:latest
 # 如果使用 GitHub Actions 或其他环境，可以改为 alpine:latest
-FROM registry.cn-beijing.aliyuncs.com/acs/alpine:latest
+FROM https://mruke5tu.mirror.aliyuncs.com/acs/alpine:latest
+
 
 WORKDIR /app
 
